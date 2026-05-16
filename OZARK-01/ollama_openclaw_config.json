@@ -1,0 +1,44 @@
+{
+  "brain": {
+    "provider": "anthropic",
+    "model": "claude-sonnet-4-6",
+    "role": "orchestrator",
+    "description": "Claude orchestrates all tasks, delegates to muscles as needed"
+  },
+  "muscles": {
+    "CHARLIE": {
+      "model": "qwen2.5-coder:14b",
+      "role": "coder",
+      "ollamaUrl": "http://localhost:11434/v1",
+      "description": "UE5 C++ specialist — NightshadeHollow subsystems, gameplay code"
+    },
+    "SCOUT": {
+      "model": "qwen3:14b",
+      "role": "researcher",
+      "ollamaUrl": "http://localhost:11434/v1",
+      "description": "NPC researcher — lore, dialogue, quest design, world-state analysis"
+    },
+    "SPEEDY": {
+      "model": "mistral:7b",
+      "role": "fast_tasks",
+      "ollamaUrl": "http://localhost:11434/v1",
+      "description": "Fast lightweight tasks — summaries, formatting, quick lookups"
+    }
+  },
+  "node": {
+    "id": "OZARK-01",
+    "hostname": "FRANKENSTINE",
+    "cpu": "Ryzen 5 7600X",
+    "gpu": "RTX 4070",
+    "vram_gb": 12,
+    "ram_gb": 32,
+    "os": "Windows 11 + WSL2 Ubuntu"
+  },
+  "endpoints": {
+    "status":  "GET  /api/openclaw/status",
+    "brain":   "POST /api/openclaw/brain",
+    "charlie": "POST /api/openclaw/charlie",
+    "scout":   "POST /api/openclaw/scout",
+    "speedy":  "POST /api/openclaw/speedy"
+  }
+}
