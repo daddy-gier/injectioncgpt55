@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "wns-profile-import-v1",
+  "title": "WNS Push Client — Profile Import Schema",
+  "description": "Schema for importing WNS app profiles (JSON representation of WnsProfileBundle protobuf).",
+  "type": "object",
+  "required": ["format_version", "profiles"],
+  "additionalProperties": false,
+  "properties": {
+    "format_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semver of this import format. Current: 1.0.0"
+    },
+    "exported_by": {
+      "type": "string",
+      "description": "Optional: identifier of the system that produced this file."
+    },
+    "exported_at_ms": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Unix epoch milliseconds when this bundle was exported."
+    },
+    "profiles": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/WnsProfile" }
+    }
+  },
+  "$defs": {
+    "WnsProfile": {
+      "type": "object",
+      "required": ["profile_id", "package_sid", "client_secret"],
+      "additionalProperties": false,
+      "properties": {
+        "profile_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Unique identifier for this profile (e.g. 'ozark-prod')."
+        },
+        "package_sid": {
+          "type": "string",
+          "pattern": "^ms-app://",
+          "description": "App Package SID from Microsoft Partner Center (ms-app://...)."
+        },
+        "client_secret": {
+          "type": "string",
+          "minLength": 1,
+          "description": "OAuth2 client_secret for this app from Microsoft Partner Center."
+        },
+        "display_name": {
+          "type": "string",
+          "description": "Human-readable label for this profile."
+        },
+        "created_at_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "channels": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/WnsChannel" },
+          "default": []
+        }
+      }
+    },
+    "WnsChannel": {
+      "type": "object",
+      "required": ["channel_id", "channel_uri"],
+      "additionalProperties": false,
+      "properties": {
+        "channel_id": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Stable identifier for this device channel."
+        },
+        "channel_uri": {
+          "type": "string",
+          "format": "uri",
+          "description": "WNS channel URI returned by Windows.Networking.PushNotifications."
+        },
+        "device_id": {
+          "type": "string",
+          "description": "Optional device identifier."
+        },
+        "device_name": {
+          "type": "string",
+          "description": "Optional human-readable device name."
+        },
+        "registered_at_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "expires_at_ms": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "WNS channel expiry (epoch ms). Channels expire after ~30 days if unused."
+        },
+        "tags": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Arbitrary key/value labels for filtering (e.g. platform, region)."
+        }
+      }
+    }
+  }
+}

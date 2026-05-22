@@ -1,0 +1,103 @@
+syntax = "proto3";
+package wns;
+
+// Notification delivery type
+enum NotificationType {
+  TOAST  = 0;
+  TILE   = 1;
+  BADGE  = 2;
+  RAW    = 3;
+}
+
+// Toast scenario — controls system sound + behaviour
+enum ToastScenario {
+  DEFAULT       = 0;
+  ALARM         = 1;
+  REMINDER      = 2;
+  INCOMING_CALL = 3;
+}
+
+// A button or context-menu entry on a toast
+message ToastAction {
+  string content         = 1;
+  string arguments       = 2;
+  string activation_type = 3;  // "foreground" | "background" | "protocol"
+}
+
+// Inline image + text toast payload
+message ToastPayload {
+  string             title       = 1;
+  string             body        = 2;
+  string             image_uri   = 3;
+  ToastScenario      scenario    = 4;
+  repeated ToastAction actions   = 5;
+  string             launch_args = 6;
+  uint32             duration_ms = 7;  // 0 = system default
+}
+
+// Live tile update payload
+message TilePayload {
+  string text      = 1;
+  string image_uri = 2;
+  string branding  = 3;  // "none" | "logo" | "nameAndLogo"
+  string badge_value = 4;
+}
+
+// Badge overlay on the app icon
+message BadgePayload {
+  uint32 value = 1;   // 0 clears the badge
+  string glyph = 2;   // e.g. "alert", "available", "busy"
+}
+
+// Opaque binary push for background processing
+message RawPayload {
+  bytes  data         = 1;
+  string content_type = 2;
+}
+
+// Top-level notification envelope
+message WnsNotification {
+  NotificationType type        = 1;
+  string           channel_uri = 2;
+  uint32           ttl_seconds = 3;  // 0 = use WNS default (1800s)
+  string           tag         = 4;  // deduplication tag
+  string           group       = 5;  // notification group
+
+  oneof payload {
+    ToastPayload toast = 10;
+    TilePayload  tile  = 11;
+    BadgePayload badge = 12;
+    RawPayload   raw   = 13;
+  }
+}
+
+// ── Profile & Channel Registry ────────────────────────────────────────────────
+
+// A registered device channel
+message WnsChannel {
+  string channel_id  = 1;
+  string channel_uri = 2;
+  string device_id   = 3;
+  string device_name = 4;
+  uint64 registered_at_ms  = 5;
+  uint64 expires_at_ms     = 6;
+  map<string, string> tags = 7;  // arbitrary key/value labels
+}
+
+// WNS app credentials + channel registry (the "binary profile")
+message WnsProfile {
+  string   profile_id    = 1;
+  string   package_sid   = 2;  // ms-app://<SID> from Partner Center
+  string   client_secret = 3;  // OAuth2 client_secret from Partner Center
+  string   display_name  = 4;
+  uint64   created_at_ms = 5;
+  repeated WnsChannel channels = 6;
+}
+
+// Batch of profiles for import/export
+message WnsProfileBundle {
+  string            format_version = 1;  // semver, e.g. "1.0.0"
+  string            exported_by    = 2;
+  uint64            exported_at_ms = 3;
+  repeated WnsProfile profiles     = 4;
+}

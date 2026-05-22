@@ -1,0 +1,9 @@
+# CLAWED Heartbeat Queue — starter tasks
+# Copy contents into Z:\Gierl\Projects\CLAWED\.heartbeat\queue.txt
+# One task per line. Lines starting with # are ignored. Oldest task runs first.
+
+Scan Source/CLAWED/Public for headers that include other headers they don't actually use. Report findings as a checklist with file:line.
+Read every *.Target.cs and report any reference to TargetBuildEnvironment.Unique (this must never appear). Report file and line number, or report clean.
+Compare DossierSubsystem.h declarations against DossierSubsystem.cpp implementations. List any declared functions missing an implementation body.
+List the 10 most recently modified C++ files via git log and summarize what changed in each in one sentence.
+Scan Source/CLAWED for any TODO or FIXME comments. Report file:line and the comment text as a prioritized checklist.
