@@ -1,0 +1,56 @@
+{
+  "_comment": "OpenClaw MCP config — save to C:\\Users\\leegi\\.openclaw-autoclaw\\openclaw.json",
+  "mcpServers": {
+    "unreal-mcp": {
+      "command": "python",
+      "args": [
+        "C:\\Users\\leegi\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\unreal_mcp_server.py"
+      ],
+      "env": {
+        "UE_PROJECT_PATH": "F:\\Unreal\\NyghtshadeHollow_UE58",
+        "UE_PYTHON_PATH": "F:\\UE_5.8\\Engine\\Binaries\\ThirdParty\\Python3\\Win64\\python.exe",
+        "UE_EDITOR_PORT": "9876"
+      }
+    },
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "F:\\Unreal\\NyghtshadeHollow_UE58",
+        "E:\\GameForgeOS",
+        "C:\\Users\\leegi\\injectioncgpt55"
+      ]
+    },
+    "git": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-git",
+        "--repository",
+        "F:\\Unreal\\NyghtshadeHollow_UE58"
+      ]
+    },
+    "gameforge": {
+      "command": "python",
+      "args": ["-m", "uvicorn", "main:app", "--port", "8002"],
+      "cwd": "E:\\GameForgeOS",
+      "env": {
+        "GAMEFORGE_MCP_MODE": "true"
+      }
+    },
+    "ollama": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-ollama"
+      ],
+      "env": {
+        "OLLAMA_HOST": "http://localhost:11434",
+        "OLLAMA_DEFAULT_MODEL": "hermes3:latest"
+      }
+    }
+  },
+  "globalShortcut": "Ctrl+Shift+O",
+  "defaultModel": "claude-opus-5-20251101"
+}

@@ -1,0 +1,61 @@
+# Hermes MCP Config — save to C:\Users\leegi\AppData\Local\hermes\config.yaml
+# After saving, restart Hermes for changes to take effect.
+
+agent:
+  name: "NyghtshadeHollow-Hermes"
+  model: "hermes3:latest"           # or nous-hermes2 if hermes3 fails
+  base_url: "http://localhost:11434"
+  system_prompt: |
+    You are an expert Unreal Engine 5.8 developer and game designer working on
+    Nyghtshade Hollow, a Victorian prison RPG. You have full access to the
+    project files at F:\Unreal\NyghtshadeHollow_UE58 and can execute Python
+    scripts inside the UE editor. When asked to modify the project, always
+    use the unreal-mcp server tools.
+
+mcp_servers:
+  - name: "unreal-mcp"
+    transport: "stdio"
+    command: "python"
+    args:
+      - "C:\\Users\\leegi\\AppData\\Local\\Programs\\Python\\Python312\\Scripts\\unreal_mcp_server.py"
+    env:
+      UE_PROJECT_PATH: "F:\\Unreal\\NyghtshadeHollow_UE58"
+      UE_EDITOR_PORT: "9876"
+
+  - name: "filesystem"
+    transport: "stdio"
+    command: "npx"
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-filesystem"
+      - "F:\\Unreal\\NyghtshadeHollow_UE58"
+      - "E:\\GameForgeOS"
+
+  - name: "git"
+    transport: "stdio"
+    command: "npx"
+    args:
+      - "-y"
+      - "@modelcontextprotocol/server-git"
+      - "--repository"
+      - "F:\\Unreal\\NyghtshadeHollow_UE58"
+
+tools:
+  max_iterations: 20
+  timeout_seconds: 120
+  allow_shell_commands: true
+  shell_whitelist:
+    - "git"
+    - "python"
+    - "uvicorn"
+    - "ollama"
+
+ollama_fix:
+  # Hermes-3 GGUF fix — run these commands in PowerShell if hermes3:latest fails:
+  # ollama rm hermes3
+  # ollama pull nous-hermes2
+  # OR: ollama pull hermes3:8b-llama3.1
+  preferred_tags:
+    - "hermes3:8b-llama3.1"
+    - "nous-hermes2"
+    - "hermes3:latest"
