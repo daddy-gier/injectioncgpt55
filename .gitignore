@@ -1,0 +1,7 @@
+.env
+__pycache__/
+*.pyc
+*.pyo
+data/ue_docs/
+data/ue_vectors.db
+.DS_Store

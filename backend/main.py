@@ -1,5 +1,6 @@
 import os
 import json
+from pathlib import Path
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -7,7 +8,20 @@ from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional
 import anthropic
-from system_prompt import UNREAL_EXPERT_SYSTEM_PROMPT
+
+# Load .env if present (dev convenience)
+_env_file = Path(__file__).parent.parent / ".env"
+if _env_file.exists():
+    for line in _env_file.read_text().splitlines():
+        line = line.strip()
+        if line and not line.startswith("#") and "=" in line:
+            k, v = line.split("=", 1)
+            os.environ.setdefault(k.strip(), v.strip())
+
+try:
+    from system_prompt import UNREAL_EXPERT_SYSTEM_PROMPT
+except ImportError:
+    from backend.system_prompt import UNREAL_EXPERT_SYSTEM_PROMPT
 
 app = FastAPI(title="Unreal Engine AI Expert")
 
